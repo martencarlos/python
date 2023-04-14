@@ -2,19 +2,22 @@ import torch
 import json
 import torchvision.transforms as transforms
 from PIL import Image
-import urllib.request
 import requests
 from flask import Flask, jsonify, request
+import urllib.request
+
+from ultralytics import YOLO
+from io import BytesIO
 
 # Define the API server
 app = Flask(__name__)
 
 # Models
-# modelYolo = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True , force_reload=True)
+modelYolo = YOLO("yolov8n-cls.pt")  # load a pretrained model (recommended for training)
 
 # Load the pre-trained PyTorch model
-modelResnet18 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True, force_reload=True)
-modelResnet18.eval()
+# modelResnet18 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True, force_reload=True)
+# modelResnet18.eval()
 
 # # Define the image preprocessing function
 def preprocess_image_resnet18(image_url):
@@ -52,37 +55,28 @@ def preprocess_image_resnet18(image_url):
     
     return (labels[0])
 
-def preprocess_image_yolov5s(image_url):
-    # Inference
-    results = modelYolo(image_url) #you can also pass arrays of image urls
-    # Results
-    results.print()
-    results.save()  # or .show()
-    results.xyxy[0]  # img1 predictions (tensor)
-    results.pandas().xyxy[0]  # img1 predictions (pandas)
-    # print(results.pandas().xyxy[0])
-    # print(results.pandas().xyxy[0].name[0])
-    # print(results.pandas().xyxy[0].confidence[0])
-    return results.pandas().xyxy[0].to_json(orient="records")
-
-    # return ({"name": results.pandas().xyxy[0].name[0], "confidence":results.pandas().xyxy[0].confidence[0]})
+def preprocess_image_yolov5s(image_url,ext):
+    response = requests.get(image_url)
+    img = Image.open(BytesIO(response.content))
+    modelYolo(img, save_txt= True)
+    return({"result": "labels saved"})
     
-
 # Define the API endpoint for object detection
 @app.route('/detect_objects', methods=['POST'])
 def detect_objects():
     # Get the image URL from the request
     image_url = request.json['image_url']
+    ext = request.json['image_ext']
     
-    predictionResnet = preprocess_image_resnet18(image_url)
-    predictionResnetJSON={"name": predictionResnet}
+    # predictionResnet = preprocess_image_resnet18(image_url)
+    # predictionResnetJSON={"name": predictionResnet}
 
-    # predictionYolo = preprocess_image_yolov5s(image_url)
+    predictionYolo = preprocess_image_yolov5s(image_url,ext)
     
     # predictions = [predictionResnetJSON,predictionYolo]
     # print(predictions)
     # Return the detected objects as JSON
-    return jsonify(predictionResnet)
+    return jsonify(predictionYolo)
 
 if __name__ == '__main__':
     app.run(debug=True)
