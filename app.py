@@ -13,7 +13,7 @@ app = Flask(__name__)
 modelYolo = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
 # Load the pre-trained PyTorch model
-modelResnet18 = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
+modelResnet18 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True)
 modelResnet18.eval()
 
 # # Define the image preprocessing function
