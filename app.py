@@ -63,8 +63,9 @@ def preprocess_image_yolov5s(image_url):
     # print(results.pandas().xyxy[0])
     # print(results.pandas().xyxy[0].name[0])
     # print(results.pandas().xyxy[0].confidence[0])
+    return results.pandas().xyxy[0].to_json(orient="records")
 
-    return ({"name": results.pandas().xyxy[0].name[0], "confidence":results.pandas().xyxy[0].confidence[0]})
+    # return ({"name": results.pandas().xyxy[0].name[0], "confidence":results.pandas().xyxy[0].confidence[0]})
     
 
 # Define the API endpoint for object detection
