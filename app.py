@@ -10,10 +10,10 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 # Models
-modelYolo = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+# modelYolo = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True , force_reload=True)
 
 # Load the pre-trained PyTorch model
-modelResnet18 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True)
+modelResnet18 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True, force_reload=True)
 modelResnet18.eval()
 
 # # Define the image preprocessing function
@@ -49,7 +49,7 @@ def preprocess_image_resnet18(image_url):
         classes = [line.decode('utf-8').strip() for line in f.readlines()]
     for i in top_indices:
         labels.append(classes[i])
-
+    
     return (labels[0])
 
 def preprocess_image_yolov5s(image_url):
@@ -76,12 +76,12 @@ def detect_objects():
     predictionResnet = preprocess_image_resnet18(image_url)
     predictionResnetJSON={"name": predictionResnet}
 
-    predictionYolo = preprocess_image_yolov5s(image_url)
+    # predictionYolo = preprocess_image_yolov5s(image_url)
     
-    predictions = [predictionResnetJSON,predictionYolo]
+    # predictions = [predictionResnetJSON,predictionYolo]
     # print(predictions)
     # Return the detected objects as JSON
-    return jsonify(predictions)
+    return jsonify(predictionResnet)
 
 if __name__ == '__main__':
     app.run(debug=True)
