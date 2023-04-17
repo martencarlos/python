@@ -78,7 +78,7 @@ def detect_objects():
     predictionYolo = preprocess_image_yolov5s(image_url,ext)
     
     # predictions = [predictionResnetJSON,predictionYolo]
-    # print(predictions)
+    print(predictionYolo)
     # Return the detected objects as JSON
     return jsonify(predictionYolo)
 
