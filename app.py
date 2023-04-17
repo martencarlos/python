@@ -60,7 +60,11 @@ def preprocess_image_yolov5s(image_url,ext):
     img = Image.open(BytesIO(response.content))
     modelYolo(img, save_txt= True)
     return({"result": "labels saved"})
-    
+
+@app.route('/')
+def hello_world():
+    return 'python app is running'
+
 # Define the API endpoint for object detection
 @app.route('/detect_objects', methods=['POST'])
 def detect_objects():
