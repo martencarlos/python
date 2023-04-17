@@ -62,7 +62,7 @@ def preprocess_image_yolov5s(image_url,ext):
     return({"result": "labels saved"})
 
 @app.route('/')
-def hello_world():
+def landing_page():
     return 'python app is running'
 
 # Define the API endpoint for object detection
@@ -82,6 +82,5 @@ def detect_objects():
     # Return the detected objects as JSON
     return jsonify(predictionYolo)
     
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
