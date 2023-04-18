@@ -3,7 +3,7 @@ import json
 import torchvision.transforms as transforms
 from PIL import Image
 import requests
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template 
 import urllib.request
 
 from ultralytics import YOLO
@@ -63,7 +63,7 @@ def preprocess_image_yolov5s(image_url,ext):
 
 @app.route('/')
 def landing_page():
-    return 'python app is running'
+    return render_template("home.html")
 
 # Define the API endpoint for object detection
 @app.route('/detect_objects', methods=['POST'])
